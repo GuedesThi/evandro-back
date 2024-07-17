@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: decasa-container
+    environment:
+      POSTGRES_USER: main
+      POSTGRES_PASSWORD: de2024casa08metais
+      POSTGRES_DB: decasametais-db
+    ports:
+      - "5432:5432"
