@@ -2,6 +2,7 @@ package br.com.decasa.api.services;
 
 import br.com.decasa.api.DTO.UserDTO;
 import br.com.decasa.api.DTO.UserLoginDTO;
+import br.com.decasa.api.DTO.UserUpdateProfileDTO;
 import br.com.decasa.api.configs.jwt.JwtService;
 import br.com.decasa.api.entities.UserEntity;
 import br.com.decasa.api.entities.UserRole;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -69,6 +72,30 @@ public class UserService {
             System.out.println("-------------------------------------------------------------");
 
             return null;
+        }
+    }
+
+    public Map<String, String> atualizar_user(UserUpdateProfileDTO dados_requisicao) {
+        Optional<UserEntity> user = repository.findByEmail(dados_requisicao.email());
+
+        if (!user.isPresent()) {
+            return null;
+
+        } else {
+            UserEntity newUser = user.get();
+            BeanUtils.copyProperties(dados_requisicao, newUser);
+            newUser.setUpdatedAt(LocalDateTime.now(ZoneOffset.ofHours(-3)));
+            repository.save(newUser);
+
+            Map<String, String> responseNewUserData = new HashMap<>();
+
+            responseNewUserData.put("name", newUser.getRealUsername());
+            responseNewUserData.put("email", newUser.getEmail());
+            responseNewUserData.put("address", newUser.getAddress());
+            responseNewUserData.put("cep", newUser.getCep());
+            responseNewUserData.put("urlImage", newUser.getUrlImage());
+
+            return responseNewUserData;
         }
     }
 

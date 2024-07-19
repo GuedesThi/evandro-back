@@ -2,6 +2,7 @@ package br.com.decasa.api.controllers;
 
 import br.com.decasa.api.DTO.UserDTO;
 import br.com.decasa.api.DTO.UserLoginDTO;
+import br.com.decasa.api.DTO.UserUpdateProfileDTO;
 import br.com.decasa.api.entities.UserEntity;
 import br.com.decasa.api.repositories.UserRepository;
 import br.com.decasa.api.services.UserService;
@@ -84,6 +85,23 @@ public class UserController {
 
         return ResponseEntity.ok(userInfo);
 
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<Map<String, String>> updateProfile(Authentication authentication, @RequestBody UserUpdateProfileDTO data) {
+
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = authentication.getName();
+        UserEntity user = repository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(service.atualizar_user(data));
     }
 
 }

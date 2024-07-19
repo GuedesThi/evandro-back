@@ -29,6 +29,12 @@ public class UserEntity implements UserDetails, Serializable {
     @Column()
     private String urlImage;
 
+    @Column(name = "endereco")
+    private String address;
+
+    @Column()
+    private String cep;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "usuarios_cargos",
@@ -135,5 +141,21 @@ public class UserEntity implements UserDetails, Serializable {
 
     public String getRealUsername() {
         return username;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 }
