@@ -26,13 +26,13 @@ public class UserEntity implements UserDetails, Serializable {
     @Column(nullable = false)
     private String password;
 
-    @Column()
+    @Column(nullable = true, unique = false)
     private String urlImage;
 
-    @Column(name = "endereco")
+    @Column(name = "endereco", nullable = true, unique = false)
     private String address;
 
-    @Column()
+    @Column(nullable = true, unique = false)
     private String cep;
 
     @ManyToMany(fetch = FetchType.EAGER)
