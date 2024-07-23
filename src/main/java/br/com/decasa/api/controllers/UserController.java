@@ -82,6 +82,8 @@ public class UserController {
         userInfo.put("name", user.getRealUsername());
         userInfo.put("email", user.getEmail());
         userInfo.put("urlImage", user.getUrlImage());
+        userInfo.put("address", user.getAddress());
+        userInfo.put("cep", user.getCep());
 
         return ResponseEntity.ok(userInfo);
 
@@ -101,7 +103,13 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(service.atualizar_user(data));
+        System.out.println("--------------------------------\nDados recebidos do Front: " + data + "\n--------------------------------");
+
+        Map<String, String> response = service.atualizar_user(data);
+
+        System.out.println("--------------------------------\nDados enviados para o front: " + response + "\n--------------------------------");
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

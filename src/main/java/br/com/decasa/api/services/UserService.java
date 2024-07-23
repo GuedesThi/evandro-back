@@ -76,28 +76,41 @@ public class UserService {
     }
 
     public Map<String, String> atualizar_user(UserUpdateProfileDTO dados_requisicao) {
-        Optional<UserEntity> user = repository.findByEmail(dados_requisicao.email());
+        System.out.println("--------------------------------\nDados enviados para o service: " + dados_requisicao + "\n--------------------------------");
 
-        if (!user.isPresent()) {
+        Optional<UserEntity> userOptional = repository.findByEmail(dados_requisicao.atualEmail());
+
+        if (!userOptional.isPresent()) {
             return null;
+        }
+
+        UserEntity updatedUser = userOptional.get();
+
+        BeanUtils.copyProperties(dados_requisicao, updatedUser);
+
+        if (dados_requisicao.email() != null && !dados_requisicao.email().isEmpty()) {
+            updatedUser.setEmail(dados_requisicao.email());
 
         } else {
-            UserEntity newUser = user.get();
-            BeanUtils.copyProperties(dados_requisicao, newUser);
-            newUser.setUpdatedAt(LocalDateTime.now(ZoneOffset.ofHours(-3)));
-            repository.save(newUser);
-
-            Map<String, String> responseNewUserData = new HashMap<>();
-
-            responseNewUserData.put("name", newUser.getRealUsername());
-            responseNewUserData.put("email", newUser.getEmail());
-            responseNewUserData.put("address", newUser.getAddress());
-            responseNewUserData.put("cep", newUser.getCep());
-            responseNewUserData.put("urlImage", newUser.getUrlImage());
-
-            return responseNewUserData;
+            updatedUser.setEmail(dados_requisicao.atualEmail());
         }
+
+        updatedUser.setUpdatedAt(LocalDateTime.now(ZoneOffset.ofHours(-3)));
+
+        repository.save(updatedUser);
+
+        System.out.println("--------------------------------\nDados atualizados no banco de dados: " + updatedUser + "\n--------------------------------");
+
+        Map<String, String> responseNewUserData = new HashMap<>();
+        responseNewUserData.put("name", updatedUser.getRealUsername());
+        responseNewUserData.put("email", updatedUser.getEmail());
+        responseNewUserData.put("address", updatedUser.getAddress());
+        responseNewUserData.put("cep", updatedUser.getCep());
+        responseNewUserData.put("urlImage", updatedUser.getUrlImage());
+
+        return responseNewUserData;
     }
+
 
     public boolean existsByEmail(String email) {
         return repository.existsByEmail(email);
